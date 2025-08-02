@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Para María ❤️</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 40px;
+      font-family: 'Courier New', Courier, monospace;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-around;
+      flex-wrap: wrap;
+      background: linear-gradient(135deg, #001f3f, #004080);
+      overflow: hidden;
+      position: relative;
+      color: #fff;
+    }
+
+    /* Responsive */
+    @media screen and (max-width: 768px) {
+      body {
+        flex-direction: column;
+        padding: 20px;
+      }
+      .contenido, .letra-cancion {
+        max-width: 90%;
+        margin: 0 auto;
+      }
+      h1 {
+        font-size: 32px;
+      }
+      p, .letra-cancion {
+        font-size: 16px;
+      }
+      .corazon {
+        font-size: 50px;
+      }
+    }
+
+    /* Mariposas */
+    .butterfly {
+      position: fixed;
+      width: 50px;
+      height: 50px;
+      background-image: url('https://i.imgur.com/lXwGmXt.png');
+      background-size: contain;
+      background-repeat: no-repeat;
+      opacity: 0.9;
+      filter: drop-shadow(0 0 4px #00ffffaa);
+      animation-name: fly, fadeIn;
+      animation-timing-function: ease-in-out;
+      animation-iteration-count: infinite;
+      animation-direction: alternate;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .butterfly:nth-child(1) { top: 10%; left: 15%; animation-duration: 8s; animation-delay: 0s; }
+    .butterfly:nth-child(2) { top: 30%; left: 70%; animation-duration: 10s; animation-delay: 3s; }
+    .butterfly:nth-child(3) { top: 60%; left: 40%; animation-duration: 12s; animation-delay: 5s; }
+    .butterfly:nth-child(4) { top: 80%; left: 80%; animation-duration: 9s; animation-delay: 7s; }
+
+    @keyframes fly {
+      0%   { transform: translate(0, 0) rotate(0deg); opacity: 0.9; }
+      50%  { transform: translate(40px, -40px) rotate(20deg); opacity: 1; }
+      100% { transform: translate(0, 0) rotate(0deg); opacity: 0.9; }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 0.9; }
+    }
+
+    .contenido {
+      max-width: 600px;
+      text-align: center;
+      z-index: 1;
+      position: relative;
+    }
+
+    h1 {
+      color: #d63384;
+      font-size: 40px;
+      text-shadow: 0 0 12px #d63384;
+    }
+
+    p {
+      font-size: 20px;
+      color: #ccc;
+    }
+
+    .corazon {
+      font-size: 60px;
+      animation: latir 1s infinite;
+      margin: 20px 0;
+      color: #ff4d6d;
+      text-shadow: 0 0 20px #ff4d6d;
+    }
+
+    @keyframes latir {
+      0%, 100% { transform: scale(1); }
+      50%      { transform: scale(1.3); }
+    }
+
+    .firma {
+      margin-top: 30px;
+      font-style: italic;
+      color: #aaa;
+    }
+
+    .firma[title]::after {
+      content: ' 🕵️‍♀️';
+    }
+
+    .letra-cancion {
+      max-width: 400px;
+      background-color: rgba(0,0,0,0.85);
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 0 12px #000;
+      font-size: 18px;
+      color: #fff;
+      font-weight: bold;
+      line-height: 1.8;
+      text-align: left;
+      font-family: 'Courier New', Courier, monospace;
+      min-height: 120px;
+      text-shadow: none;
+      z-index: 1;
+      position: relative;
+    }
+
+    .verso {
+      white-space: pre-wrap;
+      min-height: 100px;
+    }
+
+    audio {
+      margin-top: 20px;
+      outline: none;
+      border-radius: 10px;
+      filter: none;
+    }
+
+    /* Botón segunda parte */
+    .btn-segunda-parte {
+      margin-top: 30px;
+      padding: 12px 24px;
+      font-size: 18px;
+      background-color: #ff69b4;
+      color: white;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      box-shadow: 0 0 14px #ff69b4;
+      transition: background-color 0.3s;
+    }
+
+    .btn-segunda-parte:hover {
+      background-color: #e0559d;
+    }
+  </style>
+</head>
+<body>
+  <img src="https://i.imgur.com/lXwGmXt.png" alt="Mariposa decorativa" style="display:none;" />
+  <div class="butterfly"></div>
+  <div class="butterfly"></div>
+  <div class="butterfly"></div>
+  <div class="butterfly"></div>
+
+  <div class="contenido">
+    <h1>Para ti MARIS BODOQUE!!! 💖</h1>
+    <div class="corazon">❤️</div>
+    <p>
+      jsjsjsjs aver si me costó XD me tardé 5 horas :c <3.<br/>
+      Espero que te guste jsjs siempre quise hacer uno GG 😘😁😁.
+    </p>
+    <p class="firma" title="Tal vez hay un mensaje secreto aquí 👀">[~ \<>~|{  "{|@_{;</p>
+    <p class="firma">Con amor, 🐭 Jhami 💕</p>
+    <a href="segunda%20parte%20gg.html" target="_self" style="text-decoration:none;">
+      <button class="btn-segunda-parte">
+        Segunda parte 💌
+      </button>
+    </a>
+</body>
+</html>

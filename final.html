@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Corazón y MARIS con corazones ❤️</title>
+<style>
+  body {
+    margin: 0;
+    background: #111;
+    overflow: hidden;
+    font-family: 'Courier New', Courier, monospace;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+  }
+
+  canvas {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  #mensaje {
+    position: relative;
+    z-index: 10;
+    margin-top: 70vh;
+    text-align: center;
+    font-size: 20px;
+    font-weight: bold;
+    text-shadow: 0 0 8px #ff4d6d;
+    color: #ff6699;
+  }
+
+  #btn-link {
+    margin-top: 15px;
+    padding: 12px 24px;
+    font-size: 18px;
+    font-weight: bold;
+    background-color: #ff4d6d;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    color: white;
+    box-shadow: 0 0 12px #ff4d6d;
+    transition: background-color 0.3s;
+    text-decoration: none;
+    display: inline-block;
+  }
+  #btn-link:hover {
+    background-color: #e0445d;
+  }
+</style>
+</head>
+<body>
+
+<canvas id="canvas"></canvas>
+
+<div id="mensaje">
+ 😍 no me salio lo de poner una cancion xd pero te pongo el link jsjsjs 😘
+  <br />
+  <a id="btn-link" href="https://youtu.be/vOlJwVtqlog?si=lHJUEk-FQCTRO-m4" target="_blank" rel="noopener noreferrer">Ver canción 🎵</a>
+</div>
+
+<script>
+  const canvas = document.getElementById('canvas');
+  const ctx = canvas.getContext('2d');
+  let W, H;
+
+  function resize() {
+    W = window.innerWidth;
+    H = window.innerHeight;
+    canvas.width = W;
+    canvas.height = H;
+  }
+  window.addEventListener('resize', resize);
+  resize();
+
+  // Paramétrica del corazón (escalada y centrada verticalmente)
+  function heartPoints(n) {
+    const points = [];
+    for (let i = 0; i < n; i++) {
+      const t = i / n * 2 * Math.PI;
+      // ecuación clásica
+      const x = 16 * Math.pow(Math.sin(t), 3);
+      const y = 13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t);
+      points.push({
+        x: x * 15 + W / 2,
+        y: -y * 15 + H / 2 + 100 // abajo un poco para que se vea bien
+      });
+    }
+    return points;
+  }
+
+  // Obtenemos píxeles para el texto "MARIS"
+  function getTextPixels(text) {
+    const offCanvas = document.createElement('canvas');
+    const offCtx = offCanvas.getContext('2d');
+    offCanvas.width = W;
+    offCanvas.height = H;
+    offCtx.clearRect(0,0,W,H);
+    offCtx.font = "bold 140px Courier New";
+    offCtx.textBaseline = 'middle';
+    offCtx.textAlign = 'center';
+    offCtx.fillStyle = 'white';
+    offCtx.fillText(text, W/2, H/2 + 100);
+    const imageData = offCtx.getImageData(0, 0, W, H);
+    const pixels = [];
+    // Recolectamos píxeles donde hay texto
+    for (let y = 0; y < H; y += 5) {
+      for (let x = 0; x < W; x += 5) {
+        const i = (y * W + x) * 4;
+        if (imageData.data[i + 3] > 128) {
+          pixels.push({x, y});
+        }
+      }
+    }
+    return pixels;
+  }
+
+  const heartShape = heartPoints(700);
+  const textPixels = getTextPixels("MARIS");
+
+  class HeartParticle {
+    constructor(x, y) {
+      this.x = x;
+      this.y = y;
+      this.size = 8;
+      this.speedX = (Math.random() - 0.5) * 2;
+      this.speedY = Math.random() * 3 + 1;
+      this.state = 'falling'; // falling, formingText, formingHeart
+      this.alpha = 1;
+      this.textTarget = null;
+      this.heartTarget = null;
+      this.delay = Math.random() * 4000;
+      this.timer = 0;
+    }
+
+    update() {
+      if (this.state === 'falling') {
+        this.x += this.speedX;
+        this.y += this.speedY;
+        if (this.y > H + 20) {
+          this.y = -10;
+          this.x = Math.random() * W;
+          this.speedX = (Math.random() - 0.5) * 2;
+          this.speedY = Math.random() * 3 + 1;
+        }
+        this.timer += 16;
+        if (this.timer > this.delay) {
+          this.state = 'formingText';
+          this.textTarget = textPixels[Math.floor(Math.random() * textPixels.length)];
+        }
+      } else if (this.state === 'formingText') {
+        // Se acerca al pixel del texto
+        const dx = this.textTarget.x - this.x;
+        const dy = this.textTarget.y - this.y;
+        this.x += dx * 0.15;
+        this.y += dy * 0.15;
+        if (Math.abs(dx) < 1 && Math.abs(dy) < 1) {
+          this.state = 'formingHeart';
+          this.heartTarget = heartShape[Math.floor(Math.random() * heartShape.length)];
+        }
+      } else if (this.state === 'formingHeart') {
+        // Se acerca al punto del corazón
+        const dx = this.heartTarget.x - this.x;
+        const dy = this.heartTarget.y - this.y;
+        this.x += dx * 0.07;
+        this.y += dy * 0.07;
+      }
+    }
+
+    draw() {
+      ctx.save();
+      ctx.fillStyle = `rgba(255, 77, 109, ${this.alpha})`;
+      ctx.shadowColor = "#ff4d6d";
+      ctx.shadowBlur = 8;
+      ctx.beginPath();
+      ctx.moveTo(this.x, this.y - this.size/2);
+      ctx.bezierCurveTo(this.x - this.size/2, this.y - this.size/2, this.x - this.size/2, this.y + this.size/3, this.x, this.y + this.size/2);
+      ctx.bezierCurveTo(this.x + this.size/2, this.y + this.size/3, this.x + this.size/2, this.y - this.size/2, this.x, this.y - this.size/2);
+      ctx.fill();
+      ctx.restore();
+    }
+  }
+
+  const particlesCount = 250;
+  const particles = [];
+
+  for (let i = 0; i < particlesCount; i++) {
+    const x = Math.random() * W;
+    const y = Math.random() * H - H;
+    particles.push(new HeartParticle(x, y));
+  }
+
+  function animate() {
+    ctx.clearRect(0, 0, W, H);
+    particles.forEach(p => {
+      p.update();
+      p.draw();
+    });
+    requestAnimationFrame(animate);
+  }
+
+  animate();
+</script>
+
+</body>
+</html>

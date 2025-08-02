@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Segunda Parte - Juego 💌</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 40px;
+      font-family: 'Courier New', Courier, monospace;
+      background: linear-gradient(135deg, #6a11cb, #2575fc);
+      overflow: hidden;
+      color: #fff;
+      text-align: center;
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: center;
+    }
+
+    h1 {
+      font-size: 36px;
+      text-shadow: 0 0 10px #00f0ff;
+      margin-bottom: 15px;
+    }
+
+    .corazon-latiente {
+      font-size: 60px;
+      animation: latir 1s infinite;
+      margin: 20px 0 40px 0;
+      color: #ff4d6d;
+      text-shadow: 0 0 15px #ff4d6d;
+    }
+
+    @keyframes latir {
+      0%, 100% { transform: scale(1); }
+      50%      { transform: scale(1.3); }
+    }
+
+    .mariposa {
+      display: inline-block;
+      margin: 20px;
+      padding: 20px;
+      font-size: 24px;
+      background-color: #ffffff20;
+      border-radius: 15px;
+      cursor: pointer;
+      transition: transform 0.3s, background 0.3s;
+      box-shadow: 0 0 10px #fff5;
+      user-select: none;
+    }
+
+    .mariposa:hover {
+      transform: scale(1.2);
+      background-color: #ffffff40;
+    }
+
+    .seleccionada {
+      background-color: #88f7ff70;
+      border: 2px solid #fff;
+    }
+
+    #mensajeFinal {
+      margin-top: 40px;
+      font-size: 22px;
+      font-style: italic;
+      white-space: pre;
+      color: #fff;
+      text-shadow: 0 0 8px #000;
+      min-height: 70px;
+    }
+
+    .rain-word {
+      position: absolute;
+      font-size: 20px;
+      font-weight: bold;
+      color: #fff;
+      font-style: italic;
+      animation: drop 5s linear infinite;
+      opacity: 0.8;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    @keyframes drop {
+      0% { transform: translateY(-100px); opacity: 0; }
+      50% { opacity: 1; }
+      100% { transform: translateY(100vh); opacity: 0; }
+    }
+
+    .rain-zone {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    #btn-final {
+      margin-top: 40px;
+      padding: 14px 32px;
+      font-size: 20px;
+      font-weight: bold;
+      background-color: #00f0ff;
+      border: none;
+      border-radius: 14px;
+      cursor: pointer;
+      color: #000;
+      box-shadow: 0 0 15px #00f0ff;
+      transition: background-color 0.3s, color 0.3s;
+      user-select: none;
+    }
+    #btn-final:hover {
+      background-color: #00c3cc;
+      color: #fff;
+      box-shadow: 0 0 25px #00c3cc;
+    }
+  </style>
+</head>
+<body>
+  <h1>🌟  Elige 2 mariposas (si quieres más, ¿qué me das? jejej) 🌟</h1>
+  <div class="corazon-latiente">🦋</div>
+
+  <div id="mariposasContainer">
+    <div class="mariposa" data-idea="Te debo un reto sorpresa">🦋 1</div>
+    <div class="mariposa" data-idea="Tienes derecho a un regalo (igual lo iba a comprar pero no me dio tiempo)">🦋 2</div>
+    <div class="mariposa" data-idea="Puedes inventarte un castigo para mí xD">🦋 3</div>
+    <div class="mariposa" data-idea="Elige algo que quieras que haga">🦋 4</div>
+    <div class="mariposa" data-idea="Comodín jajaja">🦋 5</div>
+  </div>
+
+  <div id="mensajeFinal"></div>
+
+  <div class="rain-zone" id="rainZone"></div>
+
+  <button id="btn-final" style="display:none;" title="Ir a la tercera parte">Final</button>
+
+  <script>
+    const seleccionadas = [];
+    const mariposas = document.querySelectorAll('.mariposa');
+    const mensajeFinal = document.getElementById('mensajeFinal');
+    const btnFinal = document.getElementById('btn-final');
+
+    mariposas.forEach((m) => {
+      m.addEventListener('click', () => {
+        if (!m.classList.contains('seleccionada')) {
+          if (seleccionadas.length < 2) {
+            m.classList.add('seleccionada');
+            seleccionadas.push(m.dataset.idea);
+            if (seleccionadas.length === 2) mostrarMensaje();
+          }
+        }
+      });
+    });
+
+    function mostrarMensaje() {
+      const texto = `🦋 Elegiste:
+- ${seleccionadas[0]}
+- ${seleccionadas[1]}
+\nHubiera subido una ft tuya pero no tengo :<`;
+      let i = 0;
+      mensajeFinal.textContent = "";
+      function escribir() {
+        if (i < texto.length) {
+          mensajeFinal.textContent += texto.charAt(i);
+          i++;
+          setTimeout(escribir, 50);
+        } else {
+          btnFinal.style.display = "inline-block"; // mostrar botón cuando termine
+        }
+      }
+      escribir();
+    }
+
+    // lluvia de palabras
+    const palabras = ["SonsA", "Bodoque", "Corazón", "Mensa"];
+    const colores = ["#ffe4e1", "#ffb6c1", "#f08080", "#fff0f5"];
+
+    function lluvia() {
+      const rainZone = document.getElementById("rainZone");
+      const span = document.createElement("span");
+      span.className = "rain-word";
+      span.style.left = Math.random() * 100 + "%";
+      span.style.color = colores[Math.floor(Math.random() * colores.length)];
+      span.textContent = palabras[Math.floor(Math.random() * palabras.length)];
+      span.style.fontFamily = 'cursive';
+      rainZone.appendChild(span);
+      setTimeout(() => rainZone.removeChild(span), 5000);
+    }
+    setInterval(lluvia, 400);
+
+    // botón final lleva a la 3ra parte
+    btnFinal.addEventListener('click', () => {
+      window.location.href = "http://127.0.0.1:5500/tercera%20parte%20gg.html";
+    });
+  </script>
+</body>
+</html>
